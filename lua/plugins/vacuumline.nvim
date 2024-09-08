@@ -1,0 +1,11 @@
+return {
+    konapun/vacuumline.nvim',
+        branch = 'next',
+        requires = {
+            'glepnir/galaxyline.nvim', branch = 'main',
+            'kyazdani42/nvim-web-devicons', opt = true
+        },
+        config = function()
+            require('vacuumline').setup() 
+            end
+}
