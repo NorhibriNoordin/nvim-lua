@@ -20,6 +20,9 @@ return {
         }
 
     },
+    {
+        "tpope/vim-fugitive"
+    }
     -- {
     --     "gitsigns"
     -- }

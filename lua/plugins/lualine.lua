@@ -11,7 +11,7 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    theme = 'dracula',  -- Change this to your preferred theme
+                    theme = 'PaperColor',  -- Change this to your preferred theme
                     component_separators = { left = '', right = '' },
                     section_separators = { left = '', right = '' },
                     disabled_filetypes = { 'NvimTree', 'packer' },
