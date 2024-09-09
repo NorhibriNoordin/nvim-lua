@@ -15,6 +15,7 @@ return {
     {'folke/todo-comments.nvim'},
     {'nvim-lua/popup.nvim'},
     {'folke/which-key.nvim'},
+    {'tiagovla/scope.nvim'},
     
     -- lsp
     {'thosakwe/vim-flutter'},
