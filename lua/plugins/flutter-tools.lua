@@ -2,6 +2,8 @@ return {
     {
         'akinsho/flutter-tools.nvim',
         lazy = false,
+        priority = 1100,
+        -- lazy = true,
         dependencies = {
             'nvim-lua/plenary.nvim',
             'stevearc/dressing.nvim',
@@ -9,11 +11,35 @@ return {
         -- config = true,
         config = function()
             require("flutter-tools").setup({
-                -- ui {
-                --     dev_log = {
-                --         open_in_tab = true
-                --     }
-                -- }
+                ui = {
+                    border = "rounded",
+                    dev_log = {
+                        open_in_tab = true
+                    },
+                    notification = 'native'
+                    --'plugin'
+                },
+                decorations = {
+                    statusline = {
+                        app_version = true,
+                        device = true,
+                        -- project_config = false,
+                    }
+                },
+                debugger = {
+                    enabled = false,
+                },
+                lsp = {
+                    color = {
+                        enabled = true,
+                    }
+                },
+                widget_guides = {
+                    enabled = false,
+                },
+                settings = {
+                    showTodos = false,
+                }
                 -- ui = { -- Use vim.ui.select for code actions
                 --     select = function(items, opts)
                 --         local choices = {}
@@ -43,5 +69,10 @@ return {
 
         end
     },
+    -- {'natebosch/vim-lsc'},
+    -- {'natebosch/vim-lsc-dart'},
+    {'Neevash/awesome-flutter-snippets'},
+    -- {'thosakwe/vim-flutter'},
+    {'dart-lang/dart-vim-plugin'},
     {'wa11breaker/flutter-bloc.nvim'}
 }

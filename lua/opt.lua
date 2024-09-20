@@ -29,12 +29,6 @@ vim.cmd [[
   autocmd VimEnter * if !argc() | enew | endif
 ]]
 
--- vim.set()
--- vim.cmd("set ")
--- vim.cmd("set ")
--- vim.cmd("set ")
---
---
 -- Custom tabline function to show only filenames
 function custom_tabline()
   local s = ''
@@ -56,6 +50,42 @@ function custom_tabline()
   end
   return s
 end
+
+--diagnostic dialog 
+-- Customize the floating window's appearance and position
+-- Function to open the diagnostics float at the top right corner
+-- local function open_diagnostics_float()
+--   vim.diagnostic.open_float(nil, {
+--     scope = "line",
+--     border = "rounded",
+--     focusable = false,
+--     anchor = "NE",
+--     relative = "editor",
+--     row = 1,
+--     col = vim.o.columns - 1,
+--     source = "always",
+--     prefix = function(diagnostic)
+--       local diag_to_prefix = {
+--         [vim.diagnostic.severity.ERROR] = " ",
+--         [vim.diagnostic.severity.WARN] = " ",
+--         [vim.diagnostic.severity.INFO] = " ",
+--         [vim.diagnostic.severity.HINT] = " ",
+--       }
+--       return diag_to_prefix[diagnostic.severity]
+--     end,
+--   })
+-- end
+--
+-- -- Automatically show diagnostics float on CursorHold
+-- vim.api.nvim_create_autocmd("CursorHold", {
+--   pattern = "*",
+--   callback = open_diagnostics_float,
+-- })
+--
+--
+-- vim.o.updatetime = 300  -- Set delay time in milliseconds
+
+
 
 -- Set the custom tabline
 vim.o.tabline = '%!v:lua.custom_tabline()'

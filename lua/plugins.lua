@@ -18,12 +18,7 @@ return {
     {'tiagovla/scope.nvim'},
     
     -- lsp
-    {'thosakwe/vim-flutter'},
-    {'Neevash/awesome-flutter-snippets'},
-    {'natebosch/vim-lsc'},
-    {'natebosch/vim-lsc-dart'},
     -- {'OmniSharp/omnisharp.vim'},
-    {'dart-lang/dart-vim-plugin'},
 
     -- git
 
