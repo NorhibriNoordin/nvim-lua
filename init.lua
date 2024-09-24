@@ -20,18 +20,19 @@ require("opt")
 require("keybinds")
 require("lazy").setup("plugins")
 
-vim.api.nvim_create_autocmd('VimEnter', {
-    pattern = '*',
-    callback = function()
-        local args = vim.fn.argv()
-        if #args == 1 and vim.fn.isdirectory(args[1]) == 1 then
-            -- Change directory to the one provided by the argument
-            vim.cmd('cd ' .. args[1])
-            -- Open Neotree in the left sidebar and focus on the directory
-            require('neo-tree.command').execute({ action = 'focus', position = 'left', source = 'filesystem' })
-        end
-    end
-})
+-- NEOTREE Init
+-- vim.api.nvim_create_autocmd('VimEnter', {
+--     pattern = '*',
+--     callback = function()
+--         local args = vim.fn.argv()
+--         if #args == 1 and vim.fn.isdirectory(args[1]) == 1 then
+--             -- Change directory to the one provided by the argument
+--             vim.cmd('cd ' .. args[1])
+--             -- Open Neotree in the left sidebar and focus on the directory
+--             require('neo-tree.command').execute({ action = 'focus', position = 'left', source = 'filesystem' })
+--         end
+--     end
+-- })
 
 
 -- Automatically open neo-tree when starting nvim with a directory

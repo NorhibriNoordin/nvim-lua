@@ -7,6 +7,20 @@ return {
             require("mason").setup()
         end
     },
+    -- {
+    --     "zbirenbaum/copilot-cmp",
+    --     event = ""
+    -- },
+    {
+        "github/copilot.vim",
+        -- lazy = false,
+        -- config = function()
+        --     vim.g.copilot_no_tab_map = true
+        --
+        --     -- vim.api.nvim_set_keymap("i", "<Tab>", 'copilot#complete("<Tab>")', {silent = true, expr = true}) 
+        --     -- vim.api.nvim_set_keymap("i", "<C-\\>", 'copilot#complete("<CR>")', {silent = true, expr = true}) 
+        -- end
+    },
     {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,

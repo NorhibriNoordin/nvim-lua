@@ -25,6 +25,8 @@ vim.o.swapfile = false
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+vim.opt.autochdir = false
+
 vim.cmd [[
   autocmd VimEnter * if !argc() | enew | endif
 ]]
