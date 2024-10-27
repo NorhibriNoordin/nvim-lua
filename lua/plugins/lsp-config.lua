@@ -35,6 +35,33 @@ return {
     },
     {
         "neovim/nvim-lspconfig",
+        opts = {
+            servers = {
+                omnisharp = {
+                    handlers = {
+                        ["textDocument/definition"] = function(...)
+                            return require("omnisharp_extended").handler(...)
+                        end,
+                    },
+                    keys = {
+                        {
+                            "gd",
+                            function()
+                                if pcall(require, "telescope.nvim") then
+                                    require("omnisharp_extended").telescope_lsp_definitions()
+                                else
+                                    require("omnisharp_extended").lsp_definitions()
+                                end
+                            end,
+                            desc = "Goto Definition",
+                        },
+                    },
+                    enable_roslyn_analyzers = true,
+                    organize_imports_on_format = true,
+                    enable_import_completion = true,
+                },
+            },
+        },
         config = function()
             local lspconfig = require("lspconfig")
             require("mason").setup()
@@ -43,6 +70,7 @@ return {
                     "lua_ls",
                     "html",
                     "tailwindcss",
+                    -- "omnisharp",
                 }
 
             })
@@ -53,13 +81,20 @@ return {
                 capabilities = capabilities
             })
             -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            lspconfig.omnisharp.setup({
+                cmd = { "omnisharp", "--languageserver" },
+                capabilities = capabilities
+            })
 
+            -- lspconfig.omnisharp_mono.setup({
+            --     cmd = 'omnisharp'
+            -- })
 
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-                vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
-                vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
-                vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
-            end,
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+            vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
+            vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
+            vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+        end,
     },
     {
         "folke/trouble.nvim",
@@ -97,6 +132,30 @@ return {
                 desc = "Quickfix List (Trouble)",
             },
         },
+        modes = {
+            preview_float = {
+                mode = "diagnostics",
+                preview = {
+                    type = "float",
+                    relative = "editor",
+                    border = "rounded",
+                    title = "Preview",
+                    title_pos = "center",
+                    position = "{0,-2}",
+                    size = {width= 0.3, height = 0.3},
+                    zindex = 200,
+                },
+            },
+            -- test = {
+            --     mode = "diagnostics",
+            --     preview = {
+            --         type = "split",
+            --         relative = "win",
+            --         position = "right",
+            --         size = 0.3,
+            --     },
+            -- },
+        },
     },
     {
         'mfussenegger/nvim-dap',
@@ -123,4 +182,67 @@ return {
             })
         end
     },
+    -- Snippet Engine and Friendly Snippets
+    {
+        'L3MON4D3/LuaSnip',
+        dependencies = { 'rafamadriz/friendly-snippets' },
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
+        end,
+    },
+
+  -- Completion Plugins
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',      -- LSP completions
+            'saadparwaiz1/cmp_luasnip',  -- LuaSnip completions
+        },
+        config = function()
+            local cmp = require'cmp'
+            local luasnip = require'luasnip'
+
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                sources = {
+                    { name = 'nvim_lsp' },
+                    { name = 'luasnip' },
+                },
+                mapping = cmp.mapping.preset.insert({
+                    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.expand_or_jumpable() then
+                            luasnip.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                }),
+            })
+        end,
+    },
+    --
+    -- {
+    --     "stevearc/quicker.nvim",
+    --     event = "Filemtype qf",
+    --     ---@module "quicker",
+    --     ---@type quicker.SetupOptions
+    --     opts = {},
+    -- },
 }

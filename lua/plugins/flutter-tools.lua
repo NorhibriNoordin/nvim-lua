@@ -69,11 +69,11 @@ return {
                 -- },
 
             })
-            vim.keymap.set('n',"<leader>f1", function()
-                vim.cmd('tabnew')
-                vim.cmd('terminal flutter run')
-            end
-            )
+            -- vim.keymap.set('n',"<leader>f1", function()
+            --     vim.cmd('tabnew')
+            --     vim.cmd('terminal flutter run')
+            -- end
+            -- )
             vim.keymap.set('n',"gd", vim.lsp.buf.definition, {})
             vim.keymap.set('n',"<leader>aw", vim.lsp.buf.code_action, {})
             vim.keymap.set('n', 'K', vim.lsp.buf.hover, { noremap = true, silent = true })
@@ -83,7 +83,7 @@ return {
     -- {'natebosch/vim-lsc'},
     -- {'natebosch/vim-lsc-dart'},
     {'Neevash/awesome-flutter-snippets'},
-    {'thosakwe/vim-flutter'},
+    -- {'thosakwe/vim-flutter'},
     {'dart-lang/dart-vim-plugin'},
     {'wa11breaker/flutter-bloc.nvim'}
 }

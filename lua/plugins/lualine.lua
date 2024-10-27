@@ -1,9 +1,7 @@
 -- ~/.config/nvim/lua/plugins.lua
 
 return {
-    -- Other plugins...
-    
-    -- Add lualine.nvim plugin
+    -- Lualine
     {
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true },
@@ -39,7 +37,8 @@ return {
                                 unnamed = '[No Name]', -- Text to show for unnamed buffers.
                             },
                             fmt = function(str)
-                                return vim.fn.expand('%:p:h') .. '/' .. vim.fn.expand('%:t')
+                                return vim.fn.fnamemodify(vim.fn.expand('%'), ':~:.')
+                                -- return vim.fn.expand('%:p:h') .. '/' .. vim.fn.expand('%:t')
                             end,
                         },
                     },
