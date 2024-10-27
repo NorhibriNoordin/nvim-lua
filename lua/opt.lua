@@ -14,8 +14,13 @@ vim.cmd("set scrolloff=4")
 vim.cmd("set cursorline")
 vim.cmd("set splitbelow")
 vim.cmd("set splitright")
+vim.cmd("set ignorecase")
+vim.cmd("set smartcase")
 -- vim.cmd("set encoding=UTF=8")
 vim.cmd("syntax on")
+
+vim.cmd("set display+=lastline")
+vim.cmd("set ruler")
 
 vim.o.swapfile = false
 
@@ -53,40 +58,15 @@ function custom_tabline()
   return s
 end
 
---diagnostic dialog 
--- Customize the floating window's appearance and position
--- Function to open the diagnostics float at the top right corner
--- local function open_diagnostics_float()
---   vim.diagnostic.open_float(nil, {
---     scope = "line",
---     border = "rounded",
---     focusable = false,
---     anchor = "NE",
---     relative = "editor",
---     row = 1,
---     col = vim.o.columns - 1,
---     source = "always",
---     prefix = function(diagnostic)
---       local diag_to_prefix = {
---         [vim.diagnostic.severity.ERROR] = " ",
---         [vim.diagnostic.severity.WARN] = " ",
---         [vim.diagnostic.severity.INFO] = " ",
---         [vim.diagnostic.severity.HINT] = " ",
---       }
---       return diag_to_prefix[diagnostic.severity]
---     end,
---   })
--- end
---
--- -- Automatically show diagnostics float on CursorHold
--- vim.api.nvim_create_autocmd("CursorHold", {
---   pattern = "*",
---   callback = open_diagnostics_float,
--- })
---
---
--- vim.o.updatetime = 300  -- Set delay time in milliseconds
+-- Retain original directory when switching buffers
+local original_dir = vim.fn.getcwd()
 
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*",
+    callback = function()
+        vim.cmd("cd " .. original_dir)
+    end
+})
 
 
 -- Set the custom tabline

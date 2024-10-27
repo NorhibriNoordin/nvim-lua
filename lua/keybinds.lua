@@ -44,15 +44,19 @@ vim.api.nvim_set_keymap('n', '<leader>wh', '<C-w>H', { noremap = true, silent = 
 vim.api.nvim_set_keymap('n', '<leader>wl', '<C-w>L', { noremap = true, silent = true }) -- Move current split to the far right
 vim.api.nvim_set_keymap('n', '<leader>wj', '<C-w>J', { noremap = true, silent = true }) -- Move current split to the very bottom
 vim.api.nvim_set_keymap('n', '<leader>wk', '<C-w>K', { noremap = true, silent = true }) -- Move current split to the top
-
-
---scroll
-vim.cmd("noremap <leader>ss :scrollbind<cr>")
-vim.cmd("noremap <leader>sq :noscrollbind<cr>")
-
+--
 -- split
 vim.cmd("noremap <leader>vs :vsplit .<cr> ")
 vim.cmd("noremap <leader>s :split .<cr> ")
+
+-- Buffer Navigation
+vim.api.nvim_set_keymap('n', '<leader>b', ':BufferNext<CR>', { noremap = true, silent = true }) -- Move to next buffer
+vim.api.nvim_set_keymap('n', '<leader>B', ':BufferPrevious<CR>', { noremap = true, silent = true }) -- Move to previous buffer
+
+
+--scroll
+vim.cmd("noremap <leader>ss :set scrollbind<cr>")
+vim.cmd("noremap <leader>sq :set noscrollbind<cr>")
 
 -- plugins
 vim.cmd("noremap <C-n> :Neotree toggle<cr> ")
@@ -71,11 +75,7 @@ vim.keymap.set('n', '<leader>fo', ':FlutterOutlineToggle<CR>')
 --trouble
 vim.keymap.set('n','<leader>tt',':Trouble diagnostics toggle<CR>')
 
---diagnostics
--- vim.api.nvim_set_keymap(
---   'n',
---   '<leader>e',
---   '<cmd>lua vim.diagnostic.open_float({ scope = "line", border = "rounded", focusable = false, anchor = "NW", relative = "editor", row = 1, col = vim.o.columns - 30 })<CR>',
---   { noremap = true, silent = true }
--- )
-
+-- codecompanion
+vim.keymap.set('n','<leader>cc',':CodeCompanionToggle<CR>')
+vim.keymap.set('n','<leader>ca',':CodeCompanionActions<CR>')
+vim.keymap.set('n','<leader>ch',':CodeCompanionChat<CR>')
