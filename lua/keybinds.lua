@@ -31,6 +31,7 @@ vim.cmd("noremap <leader>or :tabonly<cr> ")
 vim.cmd("noremap <leader>tn :tabnext<cr>")
 vim.cmd("noremap <leader>tq :tabclose<cr> ")
 vim.cmd("noremap <leader>to :tabmove 0<cr>")
+vim.cmd("noremap <leader>tp :tablast<cr> ")
 vim.cmd("noremap <leader>o :only<cr> ")
 
 --Split Navigation

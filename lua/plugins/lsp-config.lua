@@ -182,62 +182,73 @@ return {
             })
         end
     },
-    -- Snippet Engine and Friendly Snippets
     {
-        'L3MON4D3/LuaSnip',
-        dependencies = { 'rafamadriz/friendly-snippets' },
+        "rachartier/tiny-inline-diagnostic.nvim",
+        event = "VeryLazy",
+        priority = 1000,
         config = function()
-            require("luasnip.loaders.from_vscode").lazy_load()
-        end,
-    },
+            require("tiny-inline-diagnostic").setup()
+        end
 
-  -- Completion Plugins
-    {
-        'hrsh7th/nvim-cmp',
-        dependencies = {
-            'hrsh7th/cmp-nvim-lsp',      -- LSP completions
-            'saadparwaiz1/cmp_luasnip',  -- LuaSnip completions
-        },
-        config = function()
-            local cmp = require'cmp'
-            local luasnip = require'luasnip'
-
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        luasnip.lsp_expand(args.body)
-                    end,
-                },
-                sources = {
-                    { name = 'nvim_lsp' },
-                    { name = 'luasnip' },
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                    ['<C-Space>'] = cmp.mapping.complete(),
-                    ['<Tab>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        elseif luasnip.expand_or_jumpable() then
-                            luasnip.expand_or_jump()
-                        else
-                            fallback()
-                        end
-                    end, { 'i', 's' }),
-                    ['<S-Tab>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_prev_item()
-                        elseif luasnip.jumpable(-1) then
-                            luasnip.jump(-1)
-                        else
-                            fallback()
-                        end
-                    end, { 'i', 's' }),
-                }),
-            })
-        end,
-    },
-    --
+    }
+    --   UNCOMMENT IF NOT USING CODE  COMPANIONKJKJKJ
+  --   -- Snippet Engine and Friendly Snippets
+  --   {
+  --       'L3MON4D3/LuaSnip',
+  --       dependencies = { 'rafamadriz/friendly-snippets' },
+  --       config = function()
+  --           require("luasnip.loaders.from_vscode").lazy_load()
+  --       end,
+  --   },
+  --
+  -- -- Completion Plugins
+  --   {
+  --       'hrsh7th/nvim-cmp',
+  --       dependencies = {
+  --           'hrsh7th/cmp-nvim-lsp',      -- LSP completions
+  --           'saadparwaiz1/cmp_luasnip',  -- LuaSnip completions
+  --           'hrsh7th/cmp-nvim-snippets',
+  --       },
+  --       config = function()
+  --           local cmp = require'cmp'
+  --           local luasnip = require'luasnip'
+  --
+  --           cmp.setup({
+  --               snippet = {
+  --                   expand = function(args)
+  --                       luasnip.lsp_expand(args.body)
+  --                   end,
+  --               },
+  --               sources = {
+  --                   { name = 'nvim_lsp' },
+  --                   { name = 'luasnip' },
+  --                   { name = 'nvim-snippet' },
+  --               },
+  --               mapping = cmp.mapping.preset.insert({
+  --                   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+  --                   ['<C-Space>'] = cmp.mapping.complete(),
+  --                   ['<Tab>'] = cmp.mapping(function(fallback)
+  --                       if cmp.visible() then
+  --                           cmp.select_next_item()
+  --                       elseif luasnip.expand_or_jumpable() then
+  --                           luasnip.expand_or_jump()
+  --                       else
+  --                           fallback()
+  --                       end
+  --                   end, { 'i', 's' }),
+  --                   ['<S-Tab>'] = cmp.mapping(function(fallback)
+  --                       if cmp.visible() then
+  --                           cmp.select_prev_item()
+  --                       elseif luasnip.jumpable(-1) then
+  --                           luasnip.jump(-1)
+  --                       else
+  --                           fallback()
+  --                       end
+  --                   end, { 'i', 's' }),
+  --               }),
+  --           })
+  --       end,
+  --   },
     -- {
     --     "stevearc/quicker.nvim",
     --     event = "Filemtype qf",
