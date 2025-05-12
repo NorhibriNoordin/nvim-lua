@@ -19,6 +19,7 @@ vim.opt.rtp:prepend(lazypath)
 require("opt")
 require("keybinds")
 require("lazy").setup("plugins")
+-- require('lspconfig').dartls.setup({})
 
 -- NEOTREE Init
 -- vim.api.nvim_create_autocmd('VimEnter', {

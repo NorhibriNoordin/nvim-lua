@@ -82,7 +82,7 @@ return {
     },
     -- {'natebosch/vim-lsc'},
     -- {'natebosch/vim-lsc-dart'},
-    {'Neevash/awesome-flutter-snippets'},
+    {'Nash0x7E2/awesome-flutter-snippets'},
     -- {'thosakwe/vim-flutter'},
     {'dart-lang/dart-vim-plugin'},
     {'wa11breaker/flutter-bloc.nvim'}

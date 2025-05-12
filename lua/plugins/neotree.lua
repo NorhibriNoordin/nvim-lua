@@ -16,6 +16,25 @@ return {
                 },
                 -- "open_current",
                 -- "disabled", 
+                window = {
+                    position = "float",
+                    popup = {
+                        size = {
+                            height = "80%",  -- Adjust the height as needed
+                            width = "50%",   -- Adjust the width as needed
+                        },
+                        position = "50%",  -- Center the window
+                    },
+                },
+                sources = {
+                    "filesystem",
+                    "buffers",
+                    "git_status",
+                    "document_symbols",
+                },
+                enable_git_status = true,
+                enable_diagnostics = true,
+                popup_border_style = "rounded",
                 default_component_configs = {
                     indent = {
                         with_markers = true,

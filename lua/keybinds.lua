@@ -27,13 +27,13 @@ vim.cmd("noremap <leader>i 8gt ")
 vim.cmd("noremap <leader>o 9gt ")
 vim.cmd("noremap <leader>0 :tablast<cr> ")
 vim.cmd("noremap <leader>p :tabprevious<cr> ")
-vim.cmd("noremap <leader>or :tabonly<cr> ")
 vim.cmd("noremap <leader>tn :tabnext<cr>")
-vim.cmd("noremap <leader>tq :tabclose<cr> ")
 vim.cmd("noremap <leader>to :tabmove 0<cr>")
+vim.cmd("noremap <leader>or :tabonly<cr> ")
+vim.cmd("noremap <leader>tq :tabclose<cr> ")
 vim.cmd("noremap <leader>tp :tablast<cr> ")
 vim.cmd("noremap <leader>o :only<cr> ")
-
+--
 --Split Navigation
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })-- Move to left split
 vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })-- Move to bottom split
@@ -61,6 +61,7 @@ vim.cmd("noremap <leader>sq :set noscrollbind<cr>")
 
 -- plugins
 vim.cmd("noremap <C-n> :Neotree toggle<cr> ")
+-- vim.cmd("noremap <C-m> :Neotree buffers<cr> ")
 -- vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>')
 -- vim.keymap.set('n', '<C-u>', ':Undotreetoggle<CR>')
 

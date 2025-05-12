@@ -1,99 +1,81 @@
 return {
     {
         "williamboman/mason.nvim",
+        version = "^1.0.0",
         lazy = false,
         cmd = 'Mason',
         config = function()
             require("mason").setup()
         end
     },
-    -- {
-    --     "zbirenbaum/copilot-cmp",
-    --     event = ""
-    -- },
     {
         "github/copilot.vim",
-        -- lazy = false,
-        -- config = function()
-        --     vim.g.copilot_no_tab_map = true
-        --
-        --     -- vim.api.nvim_set_keymap("i", "<Tab>", 'copilot#complete("<Tab>")', {silent = true, expr = true}) 
-        --     -- vim.api.nvim_set_keymap("i", "<C-\\>", 'copilot#complete("<CR>")', {silent = true, expr = true}) 
-        -- end
     },
     {
         "williamboman/mason-lspconfig.nvim",
+        version = "^1.0.0",
         lazy = false,
-        event = {"BufReadPre", "BufNewFile" },
+        event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "williamboman/mason.nvim",
         },
         config = function()
             require("mason-lspconfig").setup({
-            })
-        end
-    },
-    {
-        "neovim/nvim-lspconfig",
-        opts = {
-            servers = {
-                omnisharp = {
-                    handlers = {
-                        ["textDocument/definition"] = function(...)
-                            return require("omnisharp_extended").handler(...)
-                        end,
-                    },
-                    keys = {
-                        {
-                            "gd",
-                            function()
-                                if pcall(require, "telescope.nvim") then
-                                    require("omnisharp_extended").telescope_lsp_definitions()
-                                else
-                                    require("omnisharp_extended").lsp_definitions()
-                                end
-                            end,
-                            desc = "Goto Definition",
-                        },
-                    },
-                    enable_roslyn_analyzers = true,
-                    organize_imports_on_format = true,
-                    enable_import_completion = true,
-                },
-            },
-        },
-        config = function()
-            local lspconfig = require("lspconfig")
-            require("mason").setup()
-            require("mason-lspconfig").setup({
+                automatic_enable = true,
                 ensure_installed = {
                     "lua_ls",
                     "html",
                     "tailwindcss",
                     -- "omnisharp",
                 }
+            })
+        end
+    },
+    {
+        "neovim/nvim-lspconfig",
+        dependencies = {
+            "williamboman/mason-lspconfig.nvim",
+            "Hoffs/omnisharp-extended-lsp.nvim", -- required for extended C# support
+        },
+        config = function()
+            local lspconfig = require("lspconfig")
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-            })
-            lspconfig.html.setup({
-                capabilities = capabilities
-            })
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities
-            })
-            -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            -- Set up omnisharp using mason's path
+            local mason_registry = require("mason-registry")
+            local omnisharp_path = mason_registry.get_package("omnisharp"):get_install_path()
+                .. "/OmniSharp.dll"
+
             lspconfig.omnisharp.setup({
-                cmd = { "omnisharp", "--languageserver" },
-                capabilities = capabilities
+                cmd = { "dotnet", omnisharp_path },
+                enable_roslyn_analyzers = true,
+                organize_imports_on_format = true,
+                enable_import_completion = true,
+                capabilities = capabilities,
+                handlers = {
+                    ["textDocument/definition"] = require("omnisharp_extended").handler,
+                },
+                -- handlers = {
+                --     ["textDocument/definition"] = function(...)
+                --         return require("omnisharp_extended").handler(...)
+                --     end,
+                -- },
             })
 
-            -- lspconfig.omnisharp_mono.setup({
-            --     cmd = 'omnisharp'
-            -- })
+            -- Setup other LSPs
+            lspconfig.html.setup({ capabilities = capabilities })
+            lspconfig.lua_ls.setup({ capabilities = capabilities })
 
+            -- Keymaps
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
             vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
             vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
             vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+
+            -- If want better omnisharp symbol resolution,
+            vim.keymap.set("n", "gd", function()
+                require("omnisharp_extended").telescope_lsp_definitions()
+            end, { desc = "Omnisharp Go to Definition" })
         end,
     },
     {
@@ -142,7 +124,7 @@ return {
                     title = "Preview",
                     title_pos = "center",
                     position = "{0,-2}",
-                    size = {width= 0.3, height = 0.3},
+                    size = { width = 0.3, height = 0.3 },
                     zindex = 200,
                 },
             },
@@ -190,65 +172,30 @@ return {
             require("tiny-inline-diagnostic").setup()
         end
 
+    },
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp', -- required for capabilities
+            ...
+        },
+        ...
+    },
+    {
+        "Hoffs/omnisharp-extended-lsp.nvim",
+        lazy = true,
     }
-    --   UNCOMMENT IF NOT USING CODE  COMPANIONKJKJKJ
-  --   -- Snippet Engine and Friendly Snippets
-  --   {
-  --       'L3MON4D3/LuaSnip',
-  --       dependencies = { 'rafamadriz/friendly-snippets' },
-  --       config = function()
-  --           require("luasnip.loaders.from_vscode").lazy_load()
-  --       end,
-  --   },
-  --
-  -- -- Completion Plugins
-  --   {
-  --       'hrsh7th/nvim-cmp',
-  --       dependencies = {
-  --           'hrsh7th/cmp-nvim-lsp',      -- LSP completions
-  --           'saadparwaiz1/cmp_luasnip',  -- LuaSnip completions
-  --           'hrsh7th/cmp-nvim-snippets',
-  --       },
-  --       config = function()
-  --           local cmp = require'cmp'
-  --           local luasnip = require'luasnip'
-  --
-  --           cmp.setup({
-  --               snippet = {
-  --                   expand = function(args)
-  --                       luasnip.lsp_expand(args.body)
-  --                   end,
-  --               },
-  --               sources = {
-  --                   { name = 'nvim_lsp' },
-  --                   { name = 'luasnip' },
-  --                   { name = 'nvim-snippet' },
-  --               },
-  --               mapping = cmp.mapping.preset.insert({
-  --                   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-  --                   ['<C-Space>'] = cmp.mapping.complete(),
-  --                   ['<Tab>'] = cmp.mapping(function(fallback)
-  --                       if cmp.visible() then
-  --                           cmp.select_next_item()
-  --                       elseif luasnip.expand_or_jumpable() then
-  --                           luasnip.expand_or_jump()
-  --                       else
-  --                           fallback()
-  --                       end
-  --                   end, { 'i', 's' }),
-  --                   ['<S-Tab>'] = cmp.mapping(function(fallback)
-  --                       if cmp.visible() then
-  --                           cmp.select_prev_item()
-  --                       elseif luasnip.jumpable(-1) then
-  --                           luasnip.jump(-1)
-  --                       else
-  --                           fallback()
-  --                       end
-  --                   end, { 'i', 's' }),
-  --               }),
-  --           })
-  --       end,
-  --   },
+
+    --   UNCOMMENT IF NOT USING CODE
+    --   -- Snippet Engine and Friendly Snippets
+    --   {
+    --       'L3MON4D3/LuaSnip',
+    --       dependencies = { 'rafamadriz/friendly-snippets' },
+    --       config = function()
+    --           require("luasnip.loaders.from_vscode").lazy_load()
+    --       end,
+    --   },
+    --
     -- {
     --     "stevearc/quicker.nvim",
     --     event = "Filemtype qf",

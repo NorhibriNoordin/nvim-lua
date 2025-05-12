@@ -1,6 +1,7 @@
 -- Treesitter does quite a bit, read up on it!
 return {
 	"nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
 	config = function()
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
@@ -15,6 +16,8 @@ return {
 				"scss",
 				"yaml",
 				"bash",
+                "angular",
+                "c_sharp",
 			},
 			auto_install = true,
 			highlight = {

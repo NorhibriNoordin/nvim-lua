@@ -1,5 +1,4 @@
 {
-  "auto-pairs": { "branch": "master", "commit": "39f06b873a8449af8ff6a3eee716d3da14d63a76" },
   "awesome-flutter-snippets": { "branch": "master", "commit": "48d4b8ba44dc0133c2299d9d810eceb5efa441a7" },
   "catpuccin": { "branch": "main", "commit": "5b5e3aef9ad7af84f463d17b5479f06b87d5c429" },
   "codecompanion.nvim": { "branch": "main", "commit": "9c8c55a16597ac3880740632d14bc15b3d2e786d" },
