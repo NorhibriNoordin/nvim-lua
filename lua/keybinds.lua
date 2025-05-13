@@ -61,6 +61,7 @@ vim.cmd("noremap <leader>sq :set noscrollbind<cr>")
 
 -- plugins
 vim.cmd("noremap <C-n> :Neotree toggle<cr> ")
+vim.cmd("noremap <leader>tb :Neotree buffers<cr> ")
 -- vim.cmd("noremap <C-m> :Neotree buffers<cr> ")
 -- vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>')
 -- vim.keymap.set('n', '<C-u>', ':Undotreetoggle<CR>')
