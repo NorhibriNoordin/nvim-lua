@@ -15,15 +15,12 @@ vim.cmd("set splitbelow")
 vim.cmd("set splitright")
 vim.cmd("set ignorecase")
 vim.cmd("set smartcase")
--- vim.cmd("set encoding=UTF=8")
 vim.cmd("syntax on")
 
 vim.cmd("set display+=lastline")
 vim.cmd("set ruler")
 
 vim.o.swapfile = false
--- vim.o.smartIndent = true
--- vim.o.autoindent = true
 
 vim.opt.fillchars = { eob = ' ' }
 vim.o.swapfile = false
@@ -73,7 +70,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
         vim.cmd("cd " .. original_dir)
     end
 })
-
 
 -- Set the custom tabline
 vim.o.tabline = '%!v:lua.custom_tabline()'

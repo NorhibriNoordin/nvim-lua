@@ -1,5 +1,3 @@
--- ~/.config/nvim/lua/plugins.lua
-
 return {
     -- Lualine
     {
@@ -9,7 +7,7 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    theme = 'dracula',  -- Change this to your preferred theme
+                    theme = 'dracula', -- Change this to your preferred theme
                     component_separators = { left = '', right = '' },
                     section_separators = { left = '', right = '' },
                     disabled_filetypes = { 'NvimTree', 'packer' },
@@ -30,7 +28,7 @@ return {
                     lualine_c = {
                         {
                             'filename',
-                            path = 1,  -- Show relative path
+                            path = 1,                  -- Show relative path
                             symbols = {
                                 modified = '[+]',      -- Text to show when the file is modified.
                                 readonly = '[-]',      -- Text to show when the file is non-modifiable or readonly.
@@ -49,11 +47,11 @@ return {
                 },
                 tabline = {},
                 extensions = {
-                    'neo-tree',  -- Use the built-in Neotree extension for separate lualine
+                    'neo-tree', -- Use the built-in Neotree extension for separate lualine
                     {
                         sections = {
-                            lualine_a = {'mode'},
-                            lualine_b = {'branch'},
+                            lualine_a = { 'mode' },
+                            lualine_b = { 'branch' },
                             lualine_c = {
                                 {
                                     'filename',
@@ -66,7 +64,7 @@ return {
                                 },
                             },
                         },
-                        filetypes = {'neo-tree'}  -- Apply this custom config only to Neotree
+                        filetypes = { 'neo-tree' } -- Apply this custom config only to Neotree
                     }
                 },
                 -- extensions = {},
@@ -77,4 +75,3 @@ return {
         end,
     },
 }
-
