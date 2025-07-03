@@ -12,48 +12,61 @@ return {
     {
         'jbyuki/quickmath.nvim',
     },
-
+    --NOTE:replacement for null-ls.nvim and conform.nvim
+    --for formatting, diagnostics, code actions, etc.
     {
-        "jose-elias-alvarez/null-ls.nvim",
-        event = "BufReadPre",
-        dependencies = { "mason.nvim" },
-        opts = function()
-            local nls = require("null-ls")
-            return {
-                sources = {
-                    nls.builtins.formatting.prettier,
-                    nls.builtins.formatting.stylua,
-                    nls.builtins.diagnostics.flake8,
-                },
-            }
-        end,
-    },
-    {
-        "stevearc/conform.nvim",
+        "nvimtools/none-ls.nvim",
         event = { "BufReadPre", "BufNewFile" },
         config = function()
-            require("conform").setup({
-                formatters_by_ft = {
-                    dart = { "dart_format" },
+            local null_ls = require("null-ls")
+            local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
+            null_ls.setup({
+                sources = {
+                    null_ls.builtins.formatting.stylua,
+                    null_ls.builtins.formatting.prettier,
+                    null_ls.builtins.formatting.dart_format,
+                    -- null_ls.builtins.formatting.csharpier, for csharp
                 },
-                format_on_save = {
-                    timeout_ms = 1000,
-                    lsp_fallback = true,
-                },
-                formatters_by_ft = {
-                    lua = { "stylua" },
-                    javascript = { "prettier" },
-                    typescript = { "prettier" },
-                    html = { "prettier" },
-                    css = { "prettier" },
-                    json = { "prettier" },
-                    markdown = { "prettier" },
-                    yaml = { "prettier" },
-                    dart = { "dart_format" },
-                }
+                on_attach = function(client, bufnr)
+                    if client.supports_method("textDocument/formatting") then
+                        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            group = augroup,
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 1000 })
+                            end,
+                        })
+                    end
+                end,
             })
         end,
     },
+
+    -- //NOTE:replaced by none-ls.nvim
+    -- {
+    --     "stevearc/conform.nvim",
+    --     event = { "BufReadPre", "BufNewFile" },
+    --     config = function()
+    --         require("conform").setup({
+    --             format_on_save = {
+    --                 timeout_ms = 1000,
+    --                 lsp_fallback = true,
+    --             },
+    --             formatters_by_ft = {
+    --                 lua = { "stylua" },
+    --                 javascript = { "prettier" },
+    --                 typescript = { "prettier" },
+    --                 html = { "prettier" },
+    --                 css = { "prettier" },
+    --                 json = { "prettier" },
+    --                 markdown = { "prettier" },
+    --                 yaml = { "prettier" },
+    --                 dart = { "dart_format" },
+    --             }
+    --         })
+    --     end,
+    -- },
 
     {
         'folke/todo-comments.nvim',

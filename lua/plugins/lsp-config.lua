@@ -73,7 +73,7 @@ return {
             vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
 
             -- If want better omnisharp symbol resolution,
-            vim.keymap.set("n", "gd", function()
+            vim.keymap.set("n", "gD", function()
                 require("omnisharp_extended").telescope_lsp_definitions()
             end, { desc = "Omnisharp Go to Definition" })
         end,

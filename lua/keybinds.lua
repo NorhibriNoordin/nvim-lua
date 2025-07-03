@@ -57,12 +57,14 @@ vim.cmd("noremap <leader>sq :set noscrollbind<cr>")
 -- plugins
 vim.cmd("noremap <C-n> :Neotree toggle<cr> ")
 vim.cmd("noremap <leader>tb :Neotree buffers<cr> ")
+vim.cmd("noremap <leader>tg :Neotree git_status<cr> ")
 -- vim.cmd("noremap <C-m> :Neotree buffers<cr> ")
 -- vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>')
 -- vim.keymap.set('n', '<C-u>', ':Undotreetoggle<CR>')
 
 --flutter
--- vim.keymap.set('n', '<leader>ft', ':FlutterTab<CR>')
+vim.keymap.set('n', '<leader>ft', ':FlutterLogToggle<CR>')
+vim.keymap.set('n', '<leader>fc', ':FlutterLogClear<CR>')
 vim.keymap.set('n', '<leader>fr', ':FlutterRun<CR>')
 vim.keymap.set('n', '<leader>fq', ':FlutterQuit<CR>')
 -- vim.keymap.set('n', '<leader>fu', ':FlutterRun -d RMX3231<CR>')
