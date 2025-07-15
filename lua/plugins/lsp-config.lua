@@ -26,6 +26,7 @@ return {
                     "lua_ls",
                     "html",
                     "tailwindcss",
+                    "dartls",
                     -- "omnisharp",
                 }
             })
@@ -65,6 +66,7 @@ return {
             -- Setup other LSPs
             lspconfig.html.setup({ capabilities = capabilities })
             lspconfig.lua_ls.setup({ capabilities = capabilities })
+            lspconfig.dartls.setup({ capabilities = capabilities })
 
             -- Keymaps
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
@@ -174,17 +176,51 @@ return {
 
     },
     {
-        'hrsh7th/nvim-cmp',
-        dependencies = {
-            'hrsh7th/cmp-nvim-lsp', -- required for capabilities
-            ...
-        },
-        ...
-    },
-    {
         "Hoffs/omnisharp-extended-lsp.nvim",
         lazy = true,
+    },
+    -- LuaSnip (snippet engine)
+    {
+        "L3MON4D3/LuaSnip",
+        build = "make install_jsregexp",
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
+        end,
+    },
+
+    -- VSCode-style snippet loader
+    { "rafamadriz/friendly-snippets" },
+
+    -- Completion engine and sources
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',
+            'saadparwaiz1/cmp_luasnip',
+            'L3MON4D3/LuaSnip',
+            'rafamadriz/friendly-snippets',
+        },
+        config = function()
+            local cmp = require("cmp")
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        require("luasnip").lsp_expand(args.body)
+                    end,
+                },
+                mapping = cmp.mapping.preset.insert({
+                    ["<Tab>"] = cmp.mapping.confirm({ select = true }),
+                }),
+                sources = {
+                    { name = "nvim_lsp" },
+                    { name = "luasnip" },
+                },
+            })
+        end,
     }
+    -- {
+    --     "rafamadriz/friendly-snippets"
+    -- }
 
     --   UNCOMMENT IF NOT USING CODE
     --   -- Snippet Engine and Friendly Snippets
