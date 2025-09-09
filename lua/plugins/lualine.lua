@@ -1,5 +1,5 @@
 return {
-    -- Lualine
+    --NOTE: Lualine
     {
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true },
@@ -7,7 +7,7 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    theme = 'dracula', -- Change this to your preferred theme
+                    theme = 'dracula', --NOTE: Change this to your preferred theme
                     component_separators = { left = '', right = '' },
                     section_separators = { left = '', right = '' },
                     disabled_filetypes = { 'NvimTree', 'packer' },
@@ -18,21 +18,20 @@ return {
                     lualine_a = { 'mode' },
                     lualine_b = { 'branch' },
                     lualine_c = { 'filename' },
-                    lualine_x = { 'encoding', 'fileformat', 'filetype' },
+                    lualine_x = { 'diagnostics', 'selectioncount', 'filetype', 'searchcount' },
                     lualine_y = { 'progress' },
                     lualine_z = { 'location' },
                 },
-                inactive_sections = {
-                    lualine_a = {},
+                inactive_sections = { lualine_a = {},
                     lualine_b = {},
                     lualine_c = {
                         {
                             'filename',
-                            path = 1,                  -- Show relative path
+                            path = 1,                  --NOTE: Show relative path
                             symbols = {
-                                modified = '[+]',      -- Text to show when the file is modified.
-                                readonly = '[-]',      -- Text to show when the file is non-modifiable or readonly.
-                                unnamed = '[No Name]', -- Text to show for unnamed buffers.
+                                modified = '[+]',      --NOTE: Text to show when the file is modified.
+                                readonly = '[-]',      --NOTE: Text to show when the file is non-modifiable or readonly.
+                                unnamed = '[No Name]', --NOTE: Text to show for unnamed buffers.
                             },
                             fmt = function(str)
                                 return vim.fn.fnamemodify(vim.fn.expand('%'), ':~:.')

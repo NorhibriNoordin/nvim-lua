@@ -31,24 +31,24 @@ vim.cmd("noremap <leader>tp :tablast<cr> ")
 vim.cmd("noremap <leader>o :only<cr> ")
 
 --Split Navigation
-vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true }) -- Move to left split
-vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true }) -- Move to bottom split
-vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true }) -- Move to top split
-vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true }) -- Move to right split
+vim.api.nvim_set_keymap("n", "<C-h>", "<C-w>h", { noremap = true, silent = true }) -- Move to left split
+vim.api.nvim_set_keymap("n", "<C-j>", "<C-w>j", { noremap = true, silent = true }) -- Move to bottom split
+vim.api.nvim_set_keymap("n", "<C-k>", "<C-w>k", { noremap = true, silent = true }) -- Move to top split
+vim.api.nvim_set_keymap("n", "<C-l>", "<C-w>l", { noremap = true, silent = true }) -- Move to right split
 
 -- Split swap
-vim.api.nvim_set_keymap('n', '<leader>wh', '<C-w>H', { noremap = true, silent = true }) -- Move current split to the far left
-vim.api.nvim_set_keymap('n', '<leader>wl', '<C-w>L', { noremap = true, silent = true }) -- Move current split to the far right
-vim.api.nvim_set_keymap('n', '<leader>wj', '<C-w>J', { noremap = true, silent = true }) -- Move current split to the very bottom
-vim.api.nvim_set_keymap('n', '<leader>wk', '<C-w>K', { noremap = true, silent = true }) -- Move current split to the top
+vim.api.nvim_set_keymap("n", "<leader>wh", "<C-w>H", { noremap = true, silent = true }) -- Move current split to the far left
+vim.api.nvim_set_keymap("n", "<leader>wl", "<C-w>L", { noremap = true, silent = true }) -- Move current split to the far right
+vim.api.nvim_set_keymap("n", "<leader>wj", "<C-w>J", { noremap = true, silent = true }) -- Move current split to the very bottom
+vim.api.nvim_set_keymap("n", "<leader>wk", "<C-w>K", { noremap = true, silent = true }) -- Move current split to the top
 
 -- split
 vim.cmd("noremap <leader>vs :vsplit .<cr> ")
 vim.cmd("noremap <leader>s :split .<cr> ")
 
 -- Buffer Navigation
-vim.api.nvim_set_keymap('n', '<leader>b', ':BufferNext<CR>', { noremap = true, silent = true })     -- Move to next buffer
-vim.api.nvim_set_keymap('n', '<leader>B', ':BufferPrevious<CR>', { noremap = true, silent = true }) -- Move to previous buffer
+vim.api.nvim_set_keymap("n", "<leader>b", ":BufferNext<CR>", { noremap = true, silent = true }) -- Move to next buffer
+vim.api.nvim_set_keymap("n", "<leader>B", ":BufferPrevious<CR>", { noremap = true, silent = true }) -- Move to previous buffer
 
 --scroll
 vim.cmd("noremap <leader>ss :set scrollbind<cr>")
@@ -56,26 +56,26 @@ vim.cmd("noremap <leader>sq :set noscrollbind<cr>")
 
 -- plugins
 vim.cmd("noremap <C-n> :Neotree toggle<cr> ")
-vim.cmd("noremap <leader>tb :Neotree buffers<cr> ")
+-- vim.cmd("noremap <leader>tb :Neotree buffers<cr> ")
 vim.cmd("noremap <leader>tg :Neotree git_status<cr> ")
 -- vim.cmd("noremap <C-m> :Neotree buffers<cr> ")
 -- vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>')
 -- vim.keymap.set('n', '<C-u>', ':Undotreetoggle<CR>')
 
 --flutter
-vim.keymap.set('n', '<leader>ft', ':FlutterLogToggle<CR>')
-vim.keymap.set('n', '<leader>fc', ':FlutterLogClear<CR>')
-vim.keymap.set('n', '<leader>fr', ':FlutterRun<CR>')
-vim.keymap.set('n', '<leader>fq', ':FlutterQuit<CR>')
+vim.keymap.set("n", "<leader>ft", ":FlutterLogToggle<CR>")
+vim.keymap.set("n", "<leader>fc", ":FlutterLogClear<CR>")
+vim.keymap.set("n", "<leader>fr", ":FlutterRun<CR>")
+vim.keymap.set("n", "<leader>fq", ":FlutterQuit<CR>")
 -- vim.keymap.set('n', '<leader>fu', ':FlutterRun -d RMX3231<CR>')
-vim.keymap.set('n', '<leader>fu', ':FlutterRun -d RMX3231<CR> :only<CR>')
-vim.keymap.set('n', '<leader>fR', ':FlutterHotRestart<CR>')
-vim.keymap.set('n', '<leader>fo', ':FlutterOutlineToggle<CR>')
+vim.keymap.set("n", "<leader>fu", ":FlutterRun -d RMX3231<CR> :only<CR>")
+vim.keymap.set("n", "<leader>fR", ":FlutterHotRestart<CR>")
+vim.keymap.set("n", "<leader>fo", ":FlutterOutlineToggle<CR>")
 
 --trouble
-vim.keymap.set('n', '<leader>tt', ':Trouble diagnostics toggle<CR>')
+vim.keymap.set("n", "<leader>tt", ":Trouble diagnostics toggle<CR>")
 
 -- codecompanion
-vim.keymap.set('n', '<leader>cc', ':CodeCompanionToggle<CR>')
-vim.keymap.set('n', '<leader>ca', ':CodeCompanionActions<CR>')
-vim.keymap.set('n', '<leader>ch', ':CodeCompanionChat<CR>')
+vim.keymap.set("n", "<leader>cc", ":CodeCompanionToggle<CR>")
+vim.keymap.set("n", "<leader>ca", ":CodeCompanionActions<CR>")
+vim.keymap.set("n", "<leader>ch", ":CodeCompanionChat<CR>")

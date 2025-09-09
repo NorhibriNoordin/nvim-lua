@@ -23,9 +23,19 @@ return {
             null_ls.setup({
                 sources = {
                     null_ls.builtins.formatting.stylua,
-                    null_ls.builtins.formatting.prettier,
+                    -- null_ls.builtins.formatting.prettier,
                     null_ls.builtins.formatting.dart_format,
                     -- null_ls.builtins.formatting.csharpier, for csharp
+                    null_ls.builtins.formatting.stylua,
+                    null_ls.builtins.formatting.prettier.with({
+                        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "html", "css", "scss", "json", "markdown", "yaml", "angular" }
+                    }),
+                    -- null_ls.builtins.diagnostics.eslint_d.with({
+                    --     condition = function(utils)
+                    --         return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json" })
+                    --     end,
+                    -- }),
+                    -- null_ls.builtins.code_actions.eslint_d,
                 },
                 on_attach = function(client, bufnr)
                     if client.supports_method("textDocument/formatting") then
