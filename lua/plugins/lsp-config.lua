@@ -41,7 +41,6 @@ return {
 			"Hoffs/omnisharp-extended-lsp.nvim", -- required for extended C# support
 		},
 		config = function()
-			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local util = require("lspconfig/util") -- for angularLS setup
 
@@ -72,7 +71,7 @@ return {
 				}
 			end
 
-			lspconfig.omnisharp.setup({
+			vim.lsp.config("omnisharp", {
 				cmd = { "dotnet", omnisharp_path },
 				enable_roslyn_analyzers = true,
 				organize_imports_on_format = true,
@@ -89,7 +88,7 @@ return {
 			})
 
 			--NOTE: angularls setup
-			lspconfig.angularls.setup({
+			vim.lsp.config("angularls", {
 				capabilities = capabilities,
 				root_dir = angular_root,
 				cmd = angular_cmd,
@@ -98,9 +97,9 @@ return {
 			})
 
 			-- Setup other LSPs
-			lspconfig.html.setup({ capabilities = capabilities })
-			lspconfig.lua_ls.setup({ capabilities = capabilities })
-			lspconfig.dartls.setup({ capabilities = capabilities })
+			vim.lsp.config("html", { capabilities = capabilities })
+			vim.lsp.config("lua_ls", { capabilities = capabilities })
+			vim.lsp.config("dartls", { capabilities = capabilities })
 
 			-- Keymaps
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
