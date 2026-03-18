@@ -21,13 +21,11 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				automatic_enable = true,
 				ensure_installed = {
 					"lua_ls",
 					"html",
 					"tailwindcss",
-					"dart",
-					-- "ast-grep"
+					-- "dart", -- Managed by flutter-tools
 					"omnisharp",
 					"angularls",
 				},
@@ -42,17 +40,63 @@ return {
 		},
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local util = require("lspconfig/util") -- still useful for root_dir patterns
+			local util = require("lspconfig/util")
 
-			-- Set up omnisharp using mason's path
+			-- Set up omnisharp path
 			local mason_registry = require("mason-registry")
 			local omnisharp_pkg = mason_registry.get_package("omnisharp")
 			local omnisharp_path = ""
+			local omnisharp_exe = ""
+
 			if omnisharp_pkg:is_installed() then
-				omnisharp_path = omnisharp_pkg:get_install_path() .. "/OmniSharp.dll"
+				local install_path = omnisharp_pkg:get_install_path()
+				omnisharp_path = install_path .. "/OmniSharp.dll"
+				omnisharp_exe = install_path .. "/libexec/OmniSharp.exe"
 			end
 
-			--AngularLS setup variables
+			-- LSP Keybindings (using LspAttach for buffer-local maps)
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+				callback = function(ev)
+					local opts = { buffer = ev.buf }
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, opts)
+					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+
+					-- Special mapping for OmniSharp
+					local client = vim.lsp.get_client_by_id(ev.data.client_id)
+					if client and client.name == "omnisharp" then
+						vim.keymap.set("n", "gD", function()
+							require("omnisharp_extended").telescope_lsp_definitions()
+						end, { buffer = ev.buf, desc = "Omnisharp Go to Definition" })
+					end
+				end,
+			})
+
+			-- Configure Servers using the new Neovim 0.11+ API
+			
+			-- OmniSharp
+			local omnisharp_cmd = { "dotnet", omnisharp_path }
+			if vim.fn.has("win32") == 1 and vim.fn.filereadable(omnisharp_exe) == 1 then
+				omnisharp_cmd = { omnisharp_exe, "--stdio" }
+			end
+
+			vim.lsp.config("omnisharp", {
+				cmd = omnisharp_cmd,
+				capabilities = capabilities,
+				enable_roslyn_analyzers = true,
+				organize_imports_on_format = true,
+				enable_import_completion = true,
+				root_dir = util.root_pattern("*.sln", "*.csproj", "omnisharp.json", "function.json", ".git"),
+				handlers = {
+					["textDocument/definition"] = require("omnisharp_extended").handler,
+				},
+			})
+			vim.lsp.enable("omnisharp")
+
+			-- Angular
 			local angular_root = util.root_pattern("angular.json", "workspace.json", "project.json")
 			local local_language_server = vim.fn.getcwd() .. "/node_modules/@angular/language-server/index.js"
 			local angular_cmd = {
@@ -75,21 +119,6 @@ return {
 				}
 			end
 
-			-- Use the new vim.lsp.config API (Neovim 0.11+)
-			if omnisharp_path ~= "" then
-				vim.lsp.config("omnisharp", {
-					cmd = { "dotnet", omnisharp_path },
-					enable_roslyn_analyzers = true,
-					organize_imports_on_format = true,
-					enable_import_completion = true,
-					capabilities = capabilities,
-					handlers = {
-						["textDocument/definition"] = require("omnisharp_extended").handler,
-					},
-				})
-				vim.lsp.enable("omnisharp")
-			end
-
 			vim.lsp.config("angularls", {
 				capabilities = capabilities,
 				root_dir = angular_root,
@@ -98,89 +127,28 @@ return {
 			})
 			vim.lsp.enable("angularls")
 
+			-- Other servers
 			vim.lsp.config("html", { capabilities = capabilities })
 			vim.lsp.enable("html")
 
 			vim.lsp.config("lua_ls", { capabilities = capabilities })
 			vim.lsp.enable("lua_ls")
 
-			vim.lsp.config("dartls", { capabilities = capabilities })
-			vim.lsp.enable("dartls")
-
 			vim.lsp.config("tailwindcss", { capabilities = capabilities })
 			vim.lsp.enable("tailwindcss")
-
-			-- Keymaps
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-			vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
-			vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
-			vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
-
-			-- If want better omnisharp symbol resolution,
-			vim.keymap.set("n", "gD", function()
-				require("omnisharp_extended").telescope_lsp_definitions()
-			end, { desc = "Omnisharp Go to Definition" })
 		end,
 	},
 	{
 		"folke/trouble.nvim",
-		opts = {}, -- for default options, refer to the configuration section for custom setup.
+		opts = {},
 		cmd = "Trouble",
 		keys = {
-			{
-				"<leader>xx",
-				"<cmd>Trouble diagnostics toggle<cr>",
-				desc = "Diagnostics (Trouble)",
-			},
-			{
-				"<leader>xX",
-				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
-			{
-				"<leader>cs",
-				"<cmd>Trouble symbols toggle focus=false<cr>",
-				desc = "Symbols (Trouble)",
-			},
-			{
-				"<leader>cl",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP Definitions / references / ... (Trouble)",
-			},
-			{
-				"<leader>xL",
-				"<cmd>Trouble loclist toggle<cr>",
-				desc = "Location List (Trouble)",
-			},
-			{
-				"<leader>xQ",
-				"<cmd>Trouble qflist toggle<cr>",
-				desc = "Quickfix List (Trouble)",
-			},
-		},
-		modes = {
-			preview_float = {
-				mode = "diagnostics",
-				preview = {
-					type = "float",
-					relative = "editor",
-					border = "rounded",
-					title = "Preview",
-					title_pos = "center",
-					position = "{0,-2}",
-					size = { width = 0.3, height = 0.3 },
-					zindex = 200,
-				},
-			},
-			-- test = {
-			--     mode = "diagnostics",
-			--     preview = {
-			--         type = "split",
-			--         relative = "win",
-			--         position = "right",
-			--         size = 0.3,
-			--     },
-			-- },
+			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+			{ "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+			{ "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+			{ "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)" },
+			{ "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+			{ "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
 		},
 	},
 	{
@@ -201,7 +169,7 @@ return {
 							"stacks",
 							"watches",
 						},
-						size = 10, -- columns
+						size = 10,
 						position = "bottom",
 					},
 				},
@@ -220,7 +188,6 @@ return {
 		"Hoffs/omnisharp-extended-lsp.nvim",
 		lazy = true,
 	},
-	-- LuaSnip (snippet engine)
 	{
 		"L3MON4D3/LuaSnip",
 		build = "make install_jsregexp",
@@ -228,11 +195,7 @@ return {
 			require("luasnip.loaders.from_vscode").lazy_load()
 		end,
 	},
-
-	-- VSCode-style snippet loader
 	{ "rafamadriz/friendly-snippets" },
-
-	-- Completion engine and sources
 	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
@@ -259,25 +222,4 @@ return {
 			})
 		end,
 	},
-	-- {
-	--     "rafamadriz/friendly-snippets"
-	-- }
-
-	--   UNCOMMENT IF NOT USING CODE
-	--   -- Snippet Engine and Friendly Snippets
-	--   {
-	--       'L3MON4D3/LuaSnip',
-	--       dependencies = { 'rafamadriz/friendly-snippets' },
-	--       config = function()
-	--           require("luasnip.loaders.from_vscode").lazy_load()
-	--       end,
-	--   },
-	--
-	-- {
-	--     "stevearc/quicker.nvim",
-	--     event = "Filemtype qf",
-	--     ---@module "quicker",
-	--     ---@type quicker.SetupOptions
-	--     opts = {},
-	-- },
 }

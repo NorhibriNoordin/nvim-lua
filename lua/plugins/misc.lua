@@ -12,6 +12,17 @@ return {
     {
         'jbyuki/quickmath.nvim',
     },
+    {
+        "j-hui/fidget.nvim",
+        opts = {
+            -- options
+            notification = {
+                window = {
+                    winblend = 0,
+                },
+            },
+        },
+    },
     --NOTE:replacement for null-ls.nvim and conform.nvim
     --for formatting, diagnostics, code actions, etc.
     {
