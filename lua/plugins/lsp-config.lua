@@ -42,11 +42,15 @@ return {
 		},
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local util = require("lspconfig/util") -- for angularLS setup
+			local util = require("lspconfig/util") -- still useful for root_dir patterns
 
 			-- Set up omnisharp using mason's path
 			local mason_registry = require("mason-registry")
-			local omnisharp_path = mason_registry.get_package("omnisharp"):get_install_path() .. "/OmniSharp.dll"
+			local omnisharp_pkg = mason_registry.get_package("omnisharp")
+			local omnisharp_path = ""
+			if omnisharp_pkg:is_installed() then
+				omnisharp_path = omnisharp_pkg:get_install_path() .. "/OmniSharp.dll"
+			end
 
 			--AngularLS setup variables
 			local angular_root = util.root_pattern("angular.json", "workspace.json", "project.json")
@@ -71,35 +75,40 @@ return {
 				}
 			end
 
-			vim.lsp.config("omnisharp", {
-				cmd = { "dotnet", omnisharp_path },
-				enable_roslyn_analyzers = true,
-				organize_imports_on_format = true,
-				enable_import_completion = true,
-				capabilities = capabilities,
-				handlers = {
-					["textDocument/definition"] = require("omnisharp_extended").handler,
-				},
-				-- handlers = {
-				--     ["textDocument/definition"] = function(...)
-				--         return require("omnisharp_extended").handler(...)
-				--     end,
-				-- },
-			})
+			-- Use the new vim.lsp.config API (Neovim 0.11+)
+			if omnisharp_path ~= "" then
+				vim.lsp.config("omnisharp", {
+					cmd = { "dotnet", omnisharp_path },
+					enable_roslyn_analyzers = true,
+					organize_imports_on_format = true,
+					enable_import_completion = true,
+					capabilities = capabilities,
+					handlers = {
+						["textDocument/definition"] = require("omnisharp_extended").handler,
+					},
+				})
+				vim.lsp.enable("omnisharp")
+			end
 
-			--NOTE: angularls setup
 			vim.lsp.config("angularls", {
 				capabilities = capabilities,
 				root_dir = angular_root,
 				cmd = angular_cmd,
 				filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx" },
-				-- You can add cu,stom settings here if needed
 			})
+			vim.lsp.enable("angularls")
 
-			-- Setup other LSPs
 			vim.lsp.config("html", { capabilities = capabilities })
+			vim.lsp.enable("html")
+
 			vim.lsp.config("lua_ls", { capabilities = capabilities })
+			vim.lsp.enable("lua_ls")
+
 			vim.lsp.config("dartls", { capabilities = capabilities })
+			vim.lsp.enable("dartls")
+
+			vim.lsp.config("tailwindcss", { capabilities = capabilities })
+			vim.lsp.enable("tailwindcss")
 
 			-- Keymaps
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})

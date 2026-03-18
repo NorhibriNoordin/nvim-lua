@@ -1,6 +1,13 @@
 -- main
-vim.cmd("inoremap jk <Esc>")
-vim.cmd("inoremap kj <Esc>")
+-- vim.cmd("inoremap jk <Esc>")
+-- vim.cmd("inoremap kj <Esc>")
+
+vim.keymap.set("i", "kj", "<Esc>", { noremap = true })
+-- vim.keymap.set("i", "kj", "<Esc>", { noremap = true })
+
+-- timeout
+vim.opt.timeout = true
+vim.opt.timeoutlen = 200
 
 -- tabs
 vim.cmd("noremap <leader>1 1gt ")

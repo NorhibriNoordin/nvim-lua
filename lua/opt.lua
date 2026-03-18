@@ -1,80 +1,55 @@
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=2")
-vim.cmd("set softtabstop=2")
--- vim.cmd("set shiftwidth")
-vim.cmd("set number")
--- vim.cmd("st nu rnu")
-vim.cmd("set nobackup")
-vim.cmd("set showcmd")
-vim.cmd("set nowrap")
-vim.cmd("set mouse=a")
-vim.cmd("set ts=4 sw=4")
-vim.cmd("set scrolloff=4")
-vim.cmd("set cursorline")
-vim.cmd("set splitbelow")
-vim.cmd("set splitright")
-vim.cmd("set ignorecase")
-vim.cmd("set smartcase")
-vim.cmd("syntax on")
 
-vim.cmd("set display+=lastline")
-vim.cmd("set ruler")
-
-vim.o.swapfile = false
-
+-- General Settings
+vim.opt.expandtab = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.scrolloff = 4
+vim.opt.number = true
+-- vim.opt.relativenumber = true -- Uncomment if desired
+vim.opt.showcmd = true
+vim.opt.wrap = false
+vim.opt.mouse = "a"
+vim.opt.cursorline = true
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.termguicolors = true
 vim.opt.fillchars = { eob = ' ' }
-vim.o.swapfile = false
+vim.opt.swapfile = false
+vim.opt.backup = false
 
+-- Netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-vim.opt.autochdir = false
-vim.opt.termguicolors = true
--- vim.o.shell = "powershell.exe"
-
-vim.cmd [[
-  autocmd VimEnter * if !argc() | enew | endif
-]]
-
--- tabline
-vim.o.showtabline = 2
-
--- Custom tabline function to show only filenames
-function custom_tabline()
-    local s = ''
-    for i = 1, vim.fn.tabpagenr('$') do
-        -- Get the filename of the buffer displayed in the tab
-        local buflist = vim.fn.tabpagebuflist(i)
-        local winnr = vim.fn.tabpagewinnr(i)
-        local bufname = vim.fn.bufname(buflist[winnr])
-        local filename = vim.fn.fnamemodify(bufname, ':t') -- Only the file name, no path
-
-        -- Highlight the current tab
-        local tab_hl = i == vim.fn.tabpagenr() and '%#TabLineSel#' or '%#TabLine#'
-
-        -- Add filename to the tabline
-        s = s .. tab_hl .. ' ' .. filename .. ' '
-
-        -- Add closing tab separator
-        s = s .. '%#TabLineFill#'
-    end
-    return s
-end
-
--- Retain original directory when switching buffers
-local original_dir = vim.fn.getcwd()
-
-vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "*",
-    callback = function()
-        vim.cmd("cd " .. original_dir)
-    end
-})
-
--- Set the custom tabline
-vim.o.tabline = '%!v:lua.custom_tabline()'
+-- UI
+vim.opt.showtabline = 2 -- Always show tabline
+vim.opt.ruler = true
+vim.opt.display:append("lastline")
 
 -- Flutter
 vim.g.flutter_show_log_on_run = "tab"
 vim.g["flutter#enable_icon"] = 1
 vim.g["flutter#enable_color_preview"] = 1
+
+-- Misc
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.fn.argc() == 0 then
+      vim.cmd("enew")
+    end
+  end,
+})
+
+-- NOTE: Removed aggressive BufEnter autocmd that forced CWD to stay static.
+-- If you need it back, uncomment below:
+-- local original_dir = vim.fn.getcwd()
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--     pattern = "*",
+--     callback = function()
+--         vim.cmd("cd " .. original_dir)
+--     end
+-- })

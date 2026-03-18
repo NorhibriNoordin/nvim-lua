@@ -7,23 +7,49 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
 			"MunifTanjim/nui.nvim",
-			-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+			"3rd/image.nvim",
+			{
+				's1n7ax/nvim-window-picker',
+				version = '2.*',
+				config = function()
+					require 'window-picker'.setup({
+						filter_rules = {
+							include_current_win = false,
+							autoselect_one = true,
+							-- filter using buffer options
+							bo = {
+								-- if the file type is one of following, the window will be ignored
+								filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+								-- if the buffer type is one of following, the window will be ignored
+								buftype = { 'terminal', "quickfix" },
+							},
+						},
+					})
+				end,
+			},
 		},
 		config = function()
 			require("neo-tree").setup({
 				filesystem = {
 					hijack_netrw_behavior = "open_default",
+					group_empty_dirs = true, -- Collapses empty nested folders into one line
+					follow_current_file = { enabled = true }, -- Keeps the tree in sync with your active file
 				},
-				-- "open_current",
-				-- "disabled",
 				window = {
 					position = "float",
 					popup = {
 						size = {
-							height = "80%", -- Adjust the height as needed
-							width = "50%", -- Adjust the width as needed
+							height = "80%",
+							width = "50%",
 						},
-						position = { row = "50%", col = "50%" }, -- Center the window
+						position = "50%", -- Center the window
+					},
+					mapping_options = {
+						noremap = true,
+						nowait = true,
+					},
+					mappings = {
+						["<space>"] = "none",
 					},
 				},
 				sources = {
@@ -34,13 +60,12 @@ return {
 				},
 				enable_git_status = true,
 				enable_diagnostics = true,
-				popup_border_style = "rounded",
 				default_component_configs = {
 					indent = {
 						with_markers = true,
 						indent_marker = "│",
 						last_indent_marker = "└",
-						indent_size = 2,
+						indent_size = 1, -- Reduced from 2 to save horizontal space
 					},
 					git_status = {
 						symbols = {

@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -16,5 +18,10 @@ vim.opt.rtp:prepend(lazypath)
 
 require("opt")
 require("keybinds")
-require("lazy").setup("plugins")
-require("luasnip.loaders.from_vscode").lazy_load()
+require("lazy").setup({
+  spec = {
+    { import = "plugins" },
+  },
+  change_detection = { notify = false },
+})
+
