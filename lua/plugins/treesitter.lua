@@ -1,35 +1,53 @@
--- Treesitter does quite a bit, read up on it!
+-- nvim-treesitter `main` branch (the `master` branch is frozen and unsupported on Neovim 0.12).
+-- Needs the `tree-sitter` CLI and a C compiler on PATH to build parsers.
+local parsers = {
+	"dart",
+	"lua",
+	"vim",
+	"vimdoc",
+	"query",
+	"markdown",
+	"markdown_inline",
+	"javascript",
+	"typescript",
+	"tsx",
+	"json",
+	"html",
+	"css",
+	"scss",
+	"yaml",
+	"bash",
+	"angular",
+	"c_sharp",
+}
+
 return {
 	"nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+	branch = "main",
+	lazy = false, -- the plugin does not support lazy-loading
+	build = ":TSUpdate",
 	config = function()
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = {
-				"dart",
-				"lua",
-				"javascript",
-				"typescript",
-				"tsx",
-				"json",
-				"html",
-				"css",
-				"scss",
-				"yaml",
-				"bash",
-                "angular",
-                "c_sharp",
-			},
-			auto_install = true,
-			highlight = {
-				enable = true, -- false will disable the whole extension
-			},
-			indent = {
-				enable = true,
-				-- I have a couple of open issues for it though:
-				-- https://github.com/nvim-treesitter/nvim-treesitter/issues?q=RobertBrunhage+is%3Aopen
-				-- https://github.com/nvim-treesitter/nvim-treesitter/issues/4945
-				-- disable = { "dart" },
-			},
+		local ts = require("nvim-treesitter")
+		ts.install(parsers)
+
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true }),
+			callback = function(args)
+				local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+				if not lang then
+					return
+				end
+				-- Auto-install parsers that exist but aren't installed yet (replaces `auto_install`).
+				if not vim.list_contains(ts.get_installed(), lang) then
+					if vim.list_contains(ts.get_available(), lang) then
+						ts.install(lang)
+					end
+					return
+				end
+				if pcall(vim.treesitter.start, args.buf, lang) then
+					vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				end
+			end,
 		})
 	end,
 }

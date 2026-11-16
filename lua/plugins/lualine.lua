@@ -1,99 +1,62 @@
 return {
-    --NOTE: Lualine
     {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'nvim-tree/nvim-web-devicons', opt = true },
-        config = function()
-            require('lualine').setup {
-                options = {
-                    icons_enabled = true,
-                    theme = 'dracula', --NOTE: Change this to your preferred theme
-                    component_separators = { left = '', right = '' },
-                    section_separators = { left = '', right = '' },
-                    disabled_filetypes = { 'NvimTree', 'packer' },
-                    always_divide_middle = true,
-                    -- globalstatus = true,
-                },
-                sections = {
-                    lualine_a = { 'mode' },
-                    lualine_b = { 'branch' },
-                    lualine_c = { 'filename' },
-                    lualine_x = {
-                        {
-                            function()
-                                local msg = 'No LSP'
-                                local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-                                local clients = vim.lsp.get_clients({ bufnr = 0 })
-                                if next(clients) == nil then
-                                    return msg
-                                end
-                                local client_names = {}
-                                for _, client in ipairs(clients) do
-                                    table.insert(client_names, client.name)
-                                end
-                                return "[" .. table.concat(client_names, ", ") .. "]"
-                            end,
-                            icon = ' ',
-                            color = { fg = '#ffffff', gui = 'bold' },
-                        },
-                        'diagnostics',
-                        'selectioncount',
-                        'filetype',
-                        'searchcount',
-                    },
-                    lualine_y = { 'progress' },
-                    lualine_z = { 'location' },
-                },
-                inactive_sections = {
-                    lualine_a = {},
-                    lualine_b = {},
-                    lualine_c = {
-                        {
-                            'filename',
-                            path = 1,                  --NOTE: Show relative path
-                            symbols = {
-                                modified = '[+]',      --NOTE: Text to show when the file is modified.
-                                readonly = '[-]',      --NOTE: Text to show when the file is non-modifiable or readonly.
-                                unnamed = '[No Name]', --NOTE: Text to show for unnamed buffers.
-                            },
-                            fmt = function(str)
-                                return vim.fn.fnamemodify(vim.fn.expand('%'), ':~:.')
-                                -- return vim.fn.expand('%:p:h') .. '/' .. vim.fn.expand('%:t')
-                            end,
-                        },
-                    },
-                    -- lualine_c = { 'filename' },
-                    lualine_x = { 'location' },
-                    lualine_y = {},
-                    lualine_z = {},
-                },
-                tabline = {},
-                extensions = {
-                    'neo-tree', -- Use the built-in Neotree extension for separate lualine
+        "nvim-lualine/lualine.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {
+            options = {
+                icons_enabled = true,
+                theme = "dracula", -- lualine's built-in theme
+                component_separators = { left = "", right = "" },
+                section_separators = { left = "", right = "" },
+                always_divide_middle = true,
+            },
+            sections = {
+                lualine_a = { "mode" },
+                lualine_b = { "branch" },
+                lualine_c = { "filename" },
+                lualine_x = {
                     {
-                        sections = {
-                            lualine_a = { 'mode' },
-                            lualine_b = { 'branch' },
-                            lualine_c = {
-                                {
-                                    'filename',
-                                    path = 1,
-                                    symbols = {
-                                        modified = '[+]',
-                                        readonly = '[-]',
-                                        unnamed = '[No Name]',
-                                    },
-                                },
-                            },
+                        function()
+                            local clients = vim.lsp.get_clients({ bufnr = 0 })
+                            if #clients == 0 then
+                                return "No LSP"
+                            end
+                            local names = vim.tbl_map(function(c)
+                                return c.name
+                            end, clients)
+                            return "[" .. table.concat(names, ", ") .. "]"
+                        end,
+                        icon = " ",
+                        color = { fg = "#ffffff", gui = "bold" },
+                    },
+                    "diagnostics",
+                    "selectioncount",
+                    "filetype",
+                    "searchcount",
+                },
+                lualine_y = { "progress" },
+                lualine_z = { "location" },
+            },
+            inactive_sections = {
+                lualine_a = {},
+                lualine_b = {},
+                lualine_c = {
+                    {
+                        "filename",
+                        path = 1, -- relative path
+                        symbols = {
+                            modified = "[+]",
+                            readonly = "[-]",
+                            unnamed = "[No Name]",
                         },
-                        filetypes = { 'neo-tree' } -- Apply this custom config only to Neotree
-                    }
+                    },
                 },
-                -- extensions = {},
-                integrations = {
-                    lualine = false,
-                },
-            }
-        end,
+                lualine_x = { "location" },
+                lualine_y = {},
+                lualine_z = {},
+            },
+            tabline = {},
+            extensions = { "neo-tree", "lazy", "trouble", "toggleterm", "fugitive" },
+        },
     },
 }

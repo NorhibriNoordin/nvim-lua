@@ -1,61 +1,61 @@
 return {
-    --- markdown preview
+    -- in-buffer markdown rendering (also used by CodeCompanion chat)
     {
         "MeanderingProgrammer/render-markdown.nvim",
-        opts = {},
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-    },
-    -- calculator
-    { 'nvim-lua/popup.nvim' },
-    { 'folke/which-key.nvim' },
-    { 'tiagovla/scope.nvim' },
-    {
-        'jbyuki/quickmath.nvim',
-    },
-    {
-        "j-hui/fidget.nvim",
+        ft = { "markdown", "codecompanion" },
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
         opts = {
-            -- options
-            notification = {
-                window = {
-                    winblend = 0,
-                },
-            },
+            file_types = { "markdown", "codecompanion" },
         },
     },
-    --NOTE:replacement for null-ls.nvim and conform.nvim
-    --for formatting, diagnostics, code actions, etc.
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        opts = {},
+    },
+    -- buffers scoped per tab
+    {
+        "tiagovla/scope.nvim",
+        lazy = false,
+        config = true,
+    },
+    -- calculator
+    {
+        "jbyuki/quickmath.nvim",
+        cmd = "Quickmath",
+    },
+    -- formatting (format on save) + code actions used by flutter-bloc
     {
         "nvimtools/none-ls.nvim",
         event = { "BufReadPre", "BufNewFile" },
+        dependencies = { "nvim-lua/plenary.nvim" },
         config = function()
             local null_ls = require("null-ls")
             local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
             null_ls.setup({
                 sources = {
                     null_ls.builtins.formatting.stylua,
-                    -- null_ls.builtins.formatting.prettier,
                     null_ls.builtins.formatting.dart_format,
                     -- null_ls.builtins.formatting.csharpier, for csharp
-                    null_ls.builtins.formatting.stylua,
                     null_ls.builtins.formatting.prettier.with({
-                        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "html", "css", "scss", "json", "markdown", "yaml", "angular" }
+                        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "html", "css", "scss", "json", "markdown", "yaml", "htmlangular" },
                     }),
-                    -- null_ls.builtins.diagnostics.eslint_d.with({
-                    --     condition = function(utils)
-                    --         return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json" })
-                    --     end,
-                    -- }),
-                    -- null_ls.builtins.code_actions.eslint_d,
                 },
                 on_attach = function(client, bufnr)
-                    if client.supports_method("textDocument/formatting") then
+                    if client:supports_method("textDocument/formatting") then
                         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
                         vim.api.nvim_create_autocmd("BufWritePre", {
                             group = augroup,
                             buffer = bufnr,
                             callback = function()
-                                vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 1000 })
+                                -- Only none-ls formats on save, so LSP formatters don't fight prettier/stylua.
+                                vim.lsp.buf.format({
+                                    bufnr = bufnr,
+                                    timeout_ms = 1000,
+                                    filter = function(c)
+                                        return c.name == "null-ls"
+                                    end,
+                                })
                             end,
                         })
                     end
@@ -63,99 +63,40 @@ return {
             })
         end,
     },
-
-    -- //NOTE:replaced by none-ls.nvim
-    -- {
-    --     "stevearc/conform.nvim",
-    --     event = { "BufReadPre", "BufNewFile" },
-    --     config = function()
-    --         require("conform").setup({
-    --             format_on_save = {
-    --                 timeout_ms = 1000,
-    --                 lsp_fallback = true,
-    --             },
-    --             formatters_by_ft = {
-    --                 lua = { "stylua" },
-    --                 javascript = { "prettier" },
-    --                 typescript = { "prettier" },
-    --                 html = { "prettier" },
-    --                 css = { "prettier" },
-    --                 json = { "prettier" },
-    --                 markdown = { "prettier" },
-    --                 yaml = { "prettier" },
-    --                 dart = { "dart_format" },
-    --             }
-    --         })
-    --     end,
-    -- },
-
     {
-        'folke/todo-comments.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        opts =
-        {
-            signs = true,      -- show icons in the signs column
-            sign_priority = 8, -- sign priority
-            -- keywords recognized as todo comments
+        "folke/todo-comments.nvim",
+        event = { "BufReadPost", "BufNewFile" },
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
             keywords = {
-                FIX = {
-                    icon = " ", -- icon used for the sign, and in search results
-                    color = "error", -- can be a hex color, or a named color (see below)
-                    alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
-                    -- signs = false, -- configure signs for some keywords individually
-                },
-                TODO = { icon = " ", color = "info" },
-                HACK = { icon = " ", color = "warning" },
-                WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-                PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-                NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+                FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+                TODO = { icon = " ", color = "info" },
+                HACK = { icon = " ", color = "warning" },
+                WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+                PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+                NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
                 TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
             },
             gui_style = {
-                fg = "NONE",       -- The gui style to use for the fg highlight group.
-                bg = "BOLD",       -- The gui style to use for the bg highlight group.
+                fg = "NONE",
+                bg = "BOLD",
             },
-            merge_keywords = true, -- when true, custom keywords will be merged with the defaults
-            -- highlighting of the line containing the todo comment
-            -- * before: highlights before the keyword (typically comment characters)
-            -- * keyword: highlights of the keyword
-            -- * after: highlights after the keyword (todo text)
             highlight = {
-                multiline = true,                -- enable multine todo comments
-                multiline_pattern = "^.",        -- lua pattern to match the next multiline from the start of the matched keyword
-                multiline_context = 10,          -- extra lines that will be re-evaluated when changing a line
-                before = "",                     -- "fg" or "bg" or empty
-                keyword = "wide",                -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-                after = "fg",                    -- "fg" or "bg" or empty
-                pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
-                comments_only = true,            -- uses treesitter to match keywords in comments only
-                max_line_len = 400,              -- ignore lines longer than this
-                exclude = {},                    -- list of file types to exclude highlighting
+                multiline = true,
+                keyword = "wide",
+                after = "fg",
+                pattern = [[.*<(KEYWORDS)\s*:]],
+                comments_only = true,
+                max_line_len = 400,
             },
-            -- list of named colors where we try to extract the guifg from the
-            -- list of highlight groups or use the hex color if hl not found as a fallback
             colors = {
                 error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
                 warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
                 info = { "DiagnosticInfo", "#2563EB" },
                 hint = { "DiagnosticHint", "#10B981" },
                 default = { "Identifier", "#7C3AED" },
-                test = { "Identifier", "#FF00FF" }
+                test = { "Identifier", "#FF00FF" },
             },
-            search = {
-                command = "rg",
-                args = {
-                    "--color=never",
-                    "--no-heading",
-                    "--with-filename",
-                    "--line-number",
-                    "--column",
-                },
-                -- regex that will be used to match keywords.
-                -- don't replace the (KEYWORDS) placeholder
-                pattern = [[\b(KEYWORDS):]], -- ripgrep regex
-                -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
-            },
-        }
+        },
     },
 }

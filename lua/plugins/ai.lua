@@ -1,48 +1,41 @@
 return {
-    "olimorris/codecompanion.nvim",
-    dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
-        "hrsh7th/nvim-cmp",
-        "nvim-telescope/telescope.nvim",
-        { "stevearc/dressing.nvim", opts = {} },
-        {
-            "MeanderingBear/render-markdown.nvim",
-            ft = { "markdown", "codecompanion" },
-            config = function()
-                require("render-markdown").setup({
-                    code = {
-                        -- Use a custom highlight group for code blocks
-                        hl = "CodeCompanionCodeBlock",
-                        -- Optionally, add a border or padding
-                        border = "rounded",
-                        padding = { 1, 6 },
-                    },
-                })
-                -- Define the custom highlight group for code blocks
-                vim.cmd('highlight CodeCompanionCodeBlock guifg=#C3E88D guibg=#232634 gui=bold')
-            end,
+    {
+        "github/copilot.vim",
+        event = "InsertEnter",
+        cmd = "Copilot",
+    },
+    {
+        "olimorris/codecompanion.nvim",
+        cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionActions", "CodeCompanionCmd" },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        -- Copilot is the default adapter for every interaction.
+        opts = {},
+    },
+    {
+        "coder/claudecode.nvim",
+        dependencies = { "folke/snacks.nvim" },
+        config = true,
+        keys = {
+            { "<leader>a",  nil,                              desc = "AI/Claude Code" },
+            { "<leader>ac", "<cmd>ClaudeCode<cr>",            desc = "Toggle Claude" },
+            { "<leader>af", "<cmd>ClaudeCodeFocus<cr>",       desc = "Focus Claude" },
+            { "<leader>ar", "<cmd>ClaudeCode --resume<cr>",   desc = "Resume Claude" },
+            { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+            { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+            { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>",       desc = "Add current buffer" },
+            { "<leader>as", "<cmd>ClaudeCodeSend<cr>",        mode = "v",                  desc = "Send to Claude" },
+            {
+                "<leader>as",
+                "<cmd>ClaudeCodeTreeAdd<cr>",
+                desc = "Add file",
+                ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+            },
+            -- Diff management
+            { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+            { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",   desc = "Deny diff" },
         },
     },
-    config = function()
-        require('codecompanion').setup({
-            copilot = true,
-            render_markdown = true,
-            highlights = {
-                query = "CodeCompanionQuery",
-                response = "CodeCompanionResponse",
-                system = "CodeCompanionSystem",
-                error = "CodeCompanionError",
-            },
-            icons = {
-                user = " ",
-                ai = " ",
-                system = " ",
-            },
-        })
-        vim.cmd('highlight CodeCompanionQuery guifg=#FFD700 guibg=#1E2746 gui=bold,underline')
-        vim.cmd('highlight CodeCompanionResponse guifg=#00FFAF guibg=#1B3322 gui=italic')
-        vim.cmd('highlight CodeCompanionSystem guifg=#AAAAAA guibg=#333333')
-        vim.cmd('highlight CodeCompanionError guifg=#FF0000 guibg=#222222 gui=bold')
-    end
 }

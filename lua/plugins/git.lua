@@ -1,4 +1,3 @@
--- nvim v0.8.0
 return {
     {
         "kdheepak/lazygit.nvim",
@@ -9,25 +8,18 @@ return {
             "LazyGitFilter",
             "LazyGitFilterCurrentFile",
         },
-        -- optional for floating window border decoration
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-        -- setting the keybinding for LazyGit with 'keys' is recommended in
-        -- order to load the plugin when the command is run for the first time
+        dependencies = { "nvim-lua/plenary.nvim" },
         keys = {
-            { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
-        }
-
+            { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+        },
     },
     {
-        'tpope/vim-fugitive'
+        "tpope/vim-fugitive",
+        cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Gblame", "GBrowse" },
     },
     {
         "lewis6991/gitsigns.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            require("gitsigns").setup()
-        end
-    }
+        event = { "BufReadPre", "BufNewFile" },
+        opts = {},
+    },
 }

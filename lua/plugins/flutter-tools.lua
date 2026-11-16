@@ -1,96 +1,27 @@
 return {
     {
-        'akinsho/flutter-tools.nvim',
-        lazy = false,
-        priority = 1100,
-        -- lazy = true,
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-            'stevearc/dressing.nvim',
+        "nvim-flutter/flutter-tools.nvim",
+        ft = { "dart" },
+        cmd = { "FlutterRun", "FlutterDevices", "FlutterEmulators" },
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
+            lsp = {
+                capabilities = function(config)
+                    return vim.tbl_deep_extend("force", config, require("cmp_nvim_lsp").default_capabilities())
+                end,
+            },
         },
-        -- config = true,
-        config = function()
-            require("flutter-tools").setup({
-                ui = {
-                    border = "rounded",
-                    dev_log = {
-                        open_in_tab = true
-                    },
-                    notification = 'native'
-                    --'plugin'
-                },
-                decorations = {
-                    statusline = {
-                        app_version = true,
-                        device = true,
-                        -- project_config = false,
-                    }
-                },
-                debugger = {
-                    enabled = false,
-                },
-                lsp = {
-                    color = {
-                        enabled = true,
-                    }
-                },
-                widget_guides = {
-                    enabled = false,
-                },
-                settings = {
-                    showTodos = false,
-                },
-
-                -- on_run = function()
-                --     vim.cmd("tabnew")
-                --     vim.cmd("terminal flutter run")
-                -- end
-                -- ui = { -- Use vim.ui.select for code actions
-                --     select = function(items, opts)
-                --         local choices = {}
-                --         for i, item in ipairs(items) do
-                --             choices[i] = item.label
-                --         end
-                --         local choice = vim.ui.select(choices, opts)
-                --         if choice then
-                --             return items[choice]
-                --         end
-                --     end,
-                --
-                --     -- Use telescope for SDK selection if flutter-tools supports customization
-                --     sdk_selection = function()
-                --         telescope.git_branches({ prompt_title = "Select SDK" })
-                --     end,
-                --
-                --     -- Use telescope for emulator selection if flutter-tools supports customization
-                --     emulator_selection = function()
-                --         telescope.git_branches({ prompt_title = "Select Emulator" })
-                --     end,
-                -- },
-
-            })
-            -- vim.keymap.set('n',"<leader>f1", function()
-            --     vim.cmd('tabnew')
-            --     vim.cmd('terminal flutter run')
-            -- end
-            -- )
-
-        end
     },
-    -- {'natebosch/vim-lsc'},
-    -- {'natebosch/vim-lsc-dart'},
-    {'Nash0x7E2/awesome-flutter-snippets'},
-    -- {'thosakwe/vim-flutter'},
-    {'dart-lang/dart-vim-plugin'},
     {
-  'wa11breaker/flutter-bloc.nvim',
-  dependencies = {
-      "nvimtools/none-ls.nvim", -- Required for code actions
-  },
-  opts = {
-    bloc_type = 'default', -- Choose from: 'default', 'equatable', 'freezed'
-    use_sealed_classes = false,
-    enable_code_actions = true,
-  }
-}
+        "wa11breaker/flutter-bloc.nvim",
+        ft = { "dart" },
+        dependencies = {
+            "nvimtools/none-ls.nvim", -- Required for code actions
+        },
+        opts = {
+            bloc_type = "default", -- Choose from: 'default', 'equatable', 'freezed'
+            use_sealed_classes = false,
+            enable_code_actions = true,
+        },
+    },
 }

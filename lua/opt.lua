@@ -1,4 +1,3 @@
-
 -- General Settings
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
@@ -16,11 +15,12 @@ vim.opt.splitright = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.termguicolors = true
-vim.opt.fillchars = { eob = ' ' }
+vim.opt.fillchars = { eob = " " }
 vim.opt.swapfile = false
 vim.opt.backup = false
+vim.opt.signcolumn = "yes" -- avoid text shifting when gitsigns/diagnostics appear
 
--- Netrw
+-- Netrw (replaced by neo-tree)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -29,27 +29,13 @@ vim.opt.showtabline = 2 -- Always show tabline
 vim.opt.ruler = true
 vim.opt.display:append("lastline")
 
--- Flutter
-vim.g.flutter_show_log_on_run = "tab"
-vim.g["flutter#enable_icon"] = 1
-vim.g["flutter#enable_color_preview"] = 1
+-- Built-in undotree (Neovim 0.12+), replaces mbbill/undotree
+pcall(vim.cmd.packadd, "nvim.undotree")
 
--- Misc
-vim.api.nvim_create_autocmd("VimEnter", {
-  pattern = "*",
-  callback = function()
-    if vim.fn.argc() == 0 then
-      vim.cmd("enew")
-    end
-  end,
+-- Extra filetypes
+vim.filetype.add({
+    extension = {
+        axml = "html", -- mini-program markup: HTML-like, gets html/tailwind LSP
+        axaml = "xml", -- Avalonia XAML
+    },
 })
-
--- NOTE: Removed aggressive BufEnter autocmd that forced CWD to stay static.
--- If you need it back, uncomment below:
--- local original_dir = vim.fn.getcwd()
--- vim.api.nvim_create_autocmd("BufEnter", {
---     pattern = "*",
---     callback = function()
---         vim.cmd("cd " .. original_dir)
---     end
--- })

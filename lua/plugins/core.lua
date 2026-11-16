@@ -1,20 +1,15 @@
 return {
-    --
-    -- theme
-    { 'ryanoasis/vim-devicons' },
-
-    -- misc
-    -- {'nvim-telecope/telescope-media-files.nvim'},
-    -- {'tpope-vim-fugitive'},
-    -- {'jiangmiao/auto-pairs'},
     {
-        'windwp/nvim-autopairs',
+        "windwp/nvim-autopairs",
         event = "InsertEnter",
-        config = true
-        -- use opts = {} for passing setup options
-        -- this is equivalent to setup({}) function
+        config = true,
     },
-    { 'iamcco/markdown-preview.nvim' },
-    { 'mbbill/undotree' },
-    -- {'folke/trouble.nvim'},
+    {
+        "iamcco/markdown-preview.nvim",
+        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+        ft = { "markdown" },
+        build = function()
+            vim.fn["mkdp#util#install"]()
+        end,
+    },
 }
